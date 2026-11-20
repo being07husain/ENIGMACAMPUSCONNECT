@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect | Opportunities</title>
+    <link href="../Styles/opportunity.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Left Sidebar Navigation -->
+    <aside class="sidebar">
+        <div>
+            <a href="../Views/dashboard.html">
+                <img src="../images/LOGO.png" class="logo" alt="CampusConnect Logo">
+            </a>
+        </div>
+        <nav class="navbar">
+            <a href="../Views/dashboard.html">Dashboard</a>
+            <a href="../Views/events.html">Events</a>
+            <a href="../Views/clubs.html">Clubs & Societies</a>
+            <a href="../Views/notices.html">Notices</a>
+            <a href="../Views/opportunities.html" class="active">Opportunities</a>
+            <a href="../Views/resources.html">Resources</a>
+            <a href="../Views/profile.html">Profile</a>
+            <a href="../Views/login.html">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main Opportunities Section -->
+    <main class="opportunities-section">
+        <!-- Top Bar: Search & User Profile -->
+        <header class="top-bar">
+            <div class="search-wrapper">
+                <input type="search" placeholder="Search opportunities..." id="search" name="search" autocomplete="off">
+            </div>
+            <div class="user-badge" onclick="window.location.href='profile.html'">
+                <img src="../images/profile.png" alt="profile">
+                <span>Profile</span>
+            </div>
+        </header>
+
+        <!-- Page Heading -->
+        <h1 class="page-title">Opportunities</h1>
+
+        <!-- Category Filter Tabs (Matching Mockup 10) -->
+        <div class="filter-row">
+            <div class="category-tabs" id="categoryTabs">
+                <button class="tab-btn active" data-category="all">All</button>
+                <button class="tab-btn" data-category="internships">Internships</button>
+                <button class="tab-btn" data-category="hackathons">Hackathons</button>
+                <button class="tab-btn" data-category="competitions">Competitions</button>
+                <button class="tab-btn" data-category="scholarships">Scholarships</button>
+                <button class="tab-btn" data-category="workshops">Workshops</button>
+                <button class="tab-btn" data-category="certifications">Certifications</button>
+            </div>
+        </div>
+
+        <!-- Opportunities Grid Container (Mockup 10) -->
+        <section class="opportunities-grid" id="opportunitiesContainer">
+            <!-- Opportunity cards will be dynamically rendered here -->
+        </section>
+
+        <!-- Empty State Message -->
+        <div class="empty-opportunities" id="emptyState">
+            <h4>No opportunities found</h4>
+            <p>Try adjusting your search terms or selecting another category.</p>
+        </div>
+    </main>
+
+    <!-- Opportunity Details & Application Modal -->
+    <div class="modal-overlay" id="opportunityModalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalOppTitle">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+
+            <div class="modal-body">
+                <!-- Top Header -->
+                <div class="modal-header-top">
+                    <div class="org-avatar" id="modalOrgAvatar">G</div>
+                    <div class="modal-header-text">
+                        <h2 id="modalOppTitle">Google Summer Internship</h2>
+                        <span class="opportunity-badge" id="modalOppBadge">Internship</span>
+                    </div>
+                </div>
+
+                <!-- Meta Fields Grid -->
+                <div class="modal-meta-grid">
+                    <div class="modal-meta-field">
+                        <label>Organization</label>
+                        <span id="modalOrgName">Google</span>
+                    </div>
+                    <div class="modal-meta-field">
+                        <label>Location / Mode</label>
+                        <span id="modalLocation">Remote / Hybrid</span>
+                    </div>
+                    <div class="modal-meta-field">
+                        <label>Deadline</label>
+                        <span id="modalDeadline" style="color: #dc2626;">Apr 28, 2025</span>
+                    </div>
+                    <div class="modal-meta-field">
+                        <label>Perk / Compensation</label>
+                        <span id="modalPerk">₹45,000 / month</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <h3 class="modal-section-title">About Opportunity</h3>
+                    <p class="modal-text" id="modalDescription">
+                        Join Google for an immersive 10-week summer internship program. Work directly with core engineering teams on distributed systems, AI infrastructure, and scalable cloud solutions.
+                    </p>
+                </div>
+
+                <!-- Requirements / Eligibility -->
+                <div>
+                    <h3 class="modal-section-title">Eligibility & Requirements</h3>
+                    <ul class="modal-req-list" id="modalRequirements">
+                        <li>Currently enrolled in B.Tech / B.E / M.Tech Computer Science or related fields</li>
+                        <li>Proficiency in C++, Java, or Python with solid Data Structures & Algorithms knowledge</li>
+                        <li>Familiarity with Git and modern software development practices</li>
+                        <li>Available for 10-12 weeks during summer 2025</li>
+                    </ul>
+                </div>
+
+                <!-- Modal Footer Action -->
+                <div class="modal-footer">
+                    <button class="btn-apply-modal" id="modalApplyBtn">Apply Now</button>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Applications are reviewed on a rolling basis.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div class="toast-notification" id="toastNotification">
+        <span id="toastMessage">Application submitted successfully!</span>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        const API_BASE = (window.location.protocol === 'file:' || (window.location.port !== '8000' && window.location.port !== ''))
+            ? 'http://127.0.0.1:8000'
+            : '';
+        window.API_BASE = API_BASE;
+
+        const token = localStorage.getItem("access_token");
+        const user = JSON.parse(localStorage.getItem("user") || "null");
+        const isFaculty = Boolean(user && user.role === "faculty");
+        const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+
+        // In-memory opportunities collection loaded directly from MongoDB
+        let opportunitiesData = [];
+
+        // State variables
+        let currentCategory = "all";
+        let searchQuery = "";
+        let activeModalOppId = null;
+
+        // DOM Elements
+        const opportunitiesContainer = document.getElementById("opportunitiesContainer");
+        const emptyState = document.getElementById("emptyState");
+        const categoryTabs = document.getElementById("categoryTabs");
+        const searchInput = document.getElementById("search");
+
+        // Modal DOM Elements
+        const modalOverlay = document.getElementById("opportunityModalOverlay");
+        const modalCloseBtn = document.getElementById("modalCloseBtn");
+        const modalOrgAvatar = document.getElementById("modalOrgAvatar");
+        const modalOppTitle = document.getElementById("modalOppTitle");
+        const modalOppBadge = document.getElementById("modalOppBadge");
+        const modalOrgName = document.getElementById("modalOrgName");
+        const modalLocation = document.getElementById("modalLocation");
+        const modalDeadline = document.getElementById("modalDeadline");
+        const modalPerk = document.getElementById("modalPerk");
+        const modalDescription = document.getElementById("modalDescription");
+        const modalRequirements = document.getElementById("modalRequirements");
+        const modalApplyBtn = document.getElementById("modalApplyBtn");
+
+        // Toast Notification Function
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("toastNotification");
+            const toastMsg = document.getElementById("toastMessage");
+            toastMsg.textContent = message;
+            toast.className = `toast-notification show ${type}`;
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3200);
+        }
+
+        // Render Opportunities Function
+        function renderOpportunities() {
+            let filtered = opportunitiesData.filter(opp => {
+                const matchCategory = (currentCategory === "all") || (opp.category.toLowerCase() === currentCategory.toLowerCase());
+                
+                const q = searchQuery.toLowerCase().trim();
+                const matchSearch = !q || (
+                    opp.title.toLowerCase().includes(q) ||
+                    opp.organization.toLowerCase().includes(q) ||
+                    opp.location.toLowerCase().includes(q) ||
+                    opp.badgeLabel.toLowerCase().includes(q) ||
+                    opp.description.toLowerCase().includes(q)
+                );
+
+                return matchCategory && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                opportunitiesContainer.innerHTML = "";
+                emptyState.classList.add("show");
+                return;
+            } else {
+                emptyState.classList.remove("show");
+            }
+
+            opportunitiesContainer.innerHTML = filtered.map(opp => {
+                let actionBtn = "";
+                if (isFaculty) {
+                    actionBtn = `
+                        <span style="padding:6px 12px; background:#f8fafc; color:#64748b; border:1px dashed #cbd5e1; border-radius:6px; font-size:0.8rem; font-weight:600;">
+                            Faculty View
+                        </span>
+                    `;
+                } else {
+                    actionBtn = `
+                        <button class="btn-apply ${opp.isApplied ? 'applied' : ''}" onclick="toggleApply('${opp.id}', event)">
+                            ${opp.isApplied ? 'Applied ✓' : 'Apply Now'}
+                        </button>
+                    `;
+                }
+
+                return `
+                    <article class="opportunity-card" data-id="${opp.id}">
+                        <div class="card-top" onclick="openOppDetails('${opp.id}')">
+                            <div class="org-avatar ${opp.avatarType}">${opp.avatarLetter}</div>
+                            <div class="card-header-info">
+                                <div class="card-title-row">
+                                    <h3 class="opportunity-title">${opp.title}</h3>
+                                </div>
+                                <span class="org-name">${opp.organization}</span>
+                                <div>
+                                    <span class="opportunity-badge ${opp.badgeClass}">${opp.badgeLabel}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-meta-list" onclick="openOppDetails('${opp.id}')">
+                            <div class="meta-row-item">
+                                <span class="icon-dot"></span>
+                                <span><strong>Location:</strong> ${opp.location}</span>
+                            </div>
+                            <div class="meta-row-item">
+                                <span class="icon-dot" style="background-color: #f59e0b;"></span>
+                                <span><strong>Perk:</strong> ${opp.perk}</span>
+                            </div>
+                        </div>
+
+                        <div class="card-bottom-bar">
+                            <span class="deadline-tag">
+                                📅 Deadline: ${opp.deadline}
+                            </span>
+                            ${actionBtn}
+                        </div>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        // Toggle Application State (Stored in MongoDB opportunity_registrations)
+        async function toggleApply(oppId, e) {
+            if (e) e.stopPropagation();
+            if (isFaculty) {
+                showToast("Faculty members do not register for student opportunities.", "info");
+                return;
+            }
+            if (!token) {
+                alert("Please log in as a student to apply for opportunities.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const opp = opportunitiesData.find(o => o.id === oppId);
+            if (!opp) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/opportunities/register`, {
+                    method: "POST",
+                    headers: { ...headers, "Content-Type": "application/json" },
+                    body: JSON.stringify({ opportunity_id: oppId })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || "Action failed");
+
+                showToast(data.message, data.isApplied ? "success" : "info");
+                await loadOpportunities();
+
+                if (activeModalOppId === oppId) {
+                    const updatedOpp = opportunitiesData.find(o => o.id === oppId);
+                    if (updatedOpp) updateModalUI(updatedOpp);
+                }
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // Open Modal
+        function openOppDetails(oppId) {
+            const opp = opportunitiesData.find(o => o.id === oppId);
+            if (!opp) return;
+
+            activeModalOppId = oppId;
+            updateModalUI(opp);
+            modalOverlay.classList.add("active");
+            document.body.style.overflow = "hidden";
+        }
+
+        // Update Modal UI
+        function updateModalUI(opp) {
+            modalOrgAvatar.className = `org-avatar ${opp.avatarType}`;
+            modalOrgAvatar.textContent = opp.avatarLetter;
+            modalOppTitle.textContent = opp.title;
+            modalOppBadge.className = `opportunity-badge ${opp.badgeClass}`;
+            modalOppBadge.textContent = opp.badgeLabel;
+            modalOrgName.textContent = opp.organization;
+            modalLocation.textContent = opp.location;
+            modalDeadline.textContent = opp.deadline;
+            modalPerk.textContent = opp.perk;
+            modalDescription.textContent = opp.description;
+
+            modalRequirements.innerHTML = (opp.requirements || []).map(r => `<li>${r}</li>`).join("");
+
+            if (isFaculty) {
+                modalApplyBtn.style.display = "none";
+            } else {
+                modalApplyBtn.style.display = "block";
+                if (opp.isApplied) {
+                    modalApplyBtn.textContent = "Applied ✓ (Click to withdraw)";
+                    modalApplyBtn.classList.add("applied");
+                } else {
+                    modalApplyBtn.textContent = "Apply Now";
+                    modalApplyBtn.classList.remove("applied");
+                }
+                modalApplyBtn.onclick = () => {
+                    toggleApply(opp.id);
+                };
+            }
+        }
+
+        // Close Modal
+        function closeModal() {
+            modalOverlay.classList.remove("active");
+            document.body.style.overflow = "";
+            activeModalOppId = null;
+        }
+
+        // Fetch opportunities from MongoDB
+        async function loadOpportunities() {
+            try {
+                const res = await fetch(`${API_BASE}/api/opportunities`, { headers });
+                if (!res.ok) throw new Error("Could not load opportunities");
+                const apiData = await res.json();
+                if (Array.isArray(apiData) && apiData.length > 0) {
+                    opportunitiesData = apiData.map(o => ({
+                        id: o.opp_id || o.id,
+                        title: o.title || "Untitled Opportunity",
+                        category: (o.category || "internships").toLowerCase(),
+                        badgeLabel: o.badgeLabel || "Opportunity",
+                        badgeClass: o.badgeClass || o.category || "internship",
+                        avatarType: o.avatarType || "google",
+                        avatarLetter: o.avatarLetter || o.title.charAt(0),
+                        organization: o.organization || "Company",
+                        location: o.location || "Remote",
+                        deadline: o.deadline || "TBA",
+                        perk: o.perk || "Competitive",
+                        isApplied: Boolean(o.isApplied),
+                        description: o.description || "",
+                        requirements: Array.isArray(o.requirements) ? o.requirements : []
+                    }));
+                }
+                renderOpportunities();
+            } catch (err) {
+                console.error("Failed to load opportunities:", err);
+            }
+        }
+
+        // Event Listeners
+        categoryTabs.addEventListener("click", (e) => {
+            const btn = e.target.closest(".tab-btn");
+            if (!btn) return;
+
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentCategory = btn.getAttribute("data-category");
+            renderOpportunities();
+        });
+
+        searchInput.addEventListener("input", (e) => {
+            searchQuery = e.target.value;
+            renderOpportunities();
+        });
+
+        modalCloseBtn.addEventListener("click", closeModal);
+        modalOverlay.addEventListener("click", (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && modalOverlay.classList.contains("active")) {
+                closeModal();
+            }
+        });
+
+        // Initialize opportunities from MongoDB
+        loadOpportunities();
+    </script>
+    <script src="../session.js"></script>
+</body>
+
+</html>

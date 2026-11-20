@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect | Resources</title>
+    <link href="../Styles/resources.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Left Sidebar Navigation -->
+    <div class="sidebar">
+        <div>
+            <a href="../Views/dashboard.html">
+                <img src="../images/LOGO.png" class="logo" alt="CampusConnect Logo">
+            </a>
+        </div>
+        <div class="navbar">
+            <a href="../Views/dashboard.html">Dashboard</a>
+            <a href="../Views/events.html">Events</a>
+            <a href="../Views/clubs.html">Clubs & Societies</a>
+            <a href="../Views/notices.html">Notices</a>
+            <a href="../Views/opportunities.html">Opportunities</a>
+            <a href="../Views/resources.html" class="active">Resources</a>
+            <a href="../Views/profile.html">Profile</a>
+            <a href="../Views/login.html">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Resources Section -->
+    <div class="resources-section">
+        <!-- Top Bar: Search & User Profile -->
+        <div class="top-bar">
+            <div class="search-wrapper">
+                <input type="search" placeholder="Search resources..." id="search" name="search" autocomplete="off">
+            </div>
+            <div class="user-badge" onclick="window.location.href='profile.html'">
+                <img src="../images/profile.png" alt="profile">
+                <span>Profile</span>
+            </div>
+        </div>
+
+        <!-- Section Title -->
+        <h3 class="page-title">Resources</h3>
+
+        <!-- Filter Category Tabs (Matching Mockup 9) -->
+        <div class="filter-row" id="filterTabs">
+            <button class="tab-btn active" data-category="all">All</button>
+            <button class="tab-btn" data-category="notes">Notes</button>
+            <button class="tab-btn" data-category="coding">Coding</button>
+            <button class="tab-btn" data-category="books">Books</button>
+            <button class="tab-btn" data-category="previous-papers">Previous Papers</button>
+            <button class="tab-btn" data-category="tutorials">Tutorials</button>
+        </div>
+
+        <!-- Resources Cards Grid (Matching Mockup 9) -->
+        <div class="resources-grid" id="resourcesGrid">
+            <!-- Card 1: Data Structures Notes -->
+            <div class="resource-card" data-id="res-1" data-category="notes" data-title="Data Structures Notes" data-author="Riya Sharma" data-date="Apr 18, 2025" data-badge="Notes" data-badge-class="notes">
+                <div class="card-top">
+                    <div class="icon-box icon-notes">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="resource-title">Data Structures Notes</h4>
+                        <span class="badge badge-notes">Notes</span>
+                    </div>
+                    <button class="btn-bookmark" data-bookmark-id="res-1" aria-label="Bookmark">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-meta">
+                    <p class="uploaded-by">Uploaded by: <strong>Riya Sharma</strong></p>
+                </div>
+                <div class="card-bottom">
+                    <span class="upload-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Apr 18, 2025
+                    </span>
+                    <button class="btn-download" data-action="download">Download</button>
+                </div>
+            </div>
+
+            <!-- Card 2: Python Basics Tutorial -->
+            <div class="resource-card" data-id="res-2" data-category="tutorials" data-title="Python Basics Tutorial" data-author="Dinesh Verma" data-date="Apr 15, 2025" data-badge="Tutorials" data-badge-class="tutorials">
+                <div class="card-top">
+                    <div class="icon-box icon-tutorials">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="resource-title">Python Basics Tutorial</h4>
+                        <span class="badge badge-tutorials">Tutorials</span>
+                    </div>
+                    <button class="btn-bookmark" data-bookmark-id="res-2" aria-label="Bookmark">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-meta">
+                    <p class="uploaded-by">Uploaded by: <strong>Dinesh Verma</strong></p>
+                </div>
+                <div class="card-bottom">
+                    <span class="upload-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Apr 15, 2025
+                    </span>
+                    <button class="btn-download" data-action="view">View</button>
+                </div>
+            </div>
+
+            <!-- Card 3: Company-wise Previous Papers -->
+            <div class="resource-card" data-id="res-3" data-category="previous-papers" data-title="Company-wise Previous Papers" data-author="Sneha Borg" data-date="Apr 12, 2025" data-badge="Previous Papers" data-badge-class="papers">
+                <div class="card-top">
+                    <div class="icon-box icon-papers">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="resource-title">Company-wise Previous Papers</h4>
+                        <span class="badge badge-papers">Previous Papers</span>
+                    </div>
+                    <button class="btn-bookmark" data-bookmark-id="res-3" aria-label="Bookmark">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-meta">
+                    <p class="uploaded-by">Uploaded by: <strong>Sneha Borg</strong></p>
+                </div>
+                <div class="card-bottom">
+                    <span class="upload-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Apr 12, 2025
+                    </span>
+                    <button class="btn-download" data-action="download">Download</button>
+                </div>
+            </div>
+
+            <!-- Card 4: Web Development Notes -->
+            <div class="resource-card" data-id="res-4" data-category="notes" data-title="Web Development Notes" data-author="Nanda Nehru" data-date="Apr 11, 2025" data-badge="Notes" data-badge-class="notes">
+                <div class="card-top">
+                    <div class="icon-box icon-notes">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="resource-title">Web Development Notes</h4>
+                        <span class="badge badge-notes">Notes</span>
+                    </div>
+                    <button class="btn-bookmark" data-bookmark-id="res-4" aria-label="Bookmark">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-meta">
+                    <p class="uploaded-by">Uploaded by: <strong>Nanda Nehru</strong></p>
+                </div>
+                <div class="card-bottom">
+                    <span class="upload-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Apr 11, 2025
+                    </span>
+                    <button class="btn-download" data-action="download">Download</button>
+                </div>
+            </div>
+
+            <!-- Card 5: Machine Learning Book -->
+            <div class="resource-card" data-id="res-5" data-category="books" data-title="Machine Learning Book" data-author="Priya Nair" data-date="Apr 09, 2025" data-badge="Books" data-badge-class="books">
+                <div class="card-top">
+                    <div class="icon-box icon-books">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="resource-title">Machine Learning Book</h4>
+                        <span class="badge badge-books">Books</span>
+                    </div>
+                    <button class="btn-bookmark" data-bookmark-id="res-5" aria-label="Bookmark">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-meta">
+                    <p class="uploaded-by">Uploaded by: <strong>Priya Nair</strong></p>
+                </div>
+                <div class="card-bottom">
+                    <span class="upload-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Apr 09, 2025
+                    </span>
+                    <button class="btn-download" data-action="download">Download</button>
+                </div>
+            </div>
+
+            <!-- Card 6: DSA Practice Questions -->
+            <div class="resource-card" data-id="res-6" data-category="coding" data-title="DSA Practice Questions" data-author="Sameer Khan" data-date="Apr 05, 2025" data-badge="Coding" data-badge-class="coding">
+                <div class="card-top">
+                    <div class="icon-box icon-coding">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="resource-title">DSA Practice Questions</h4>
+                        <span class="badge badge-coding">Coding</span>
+                    </div>
+                    <button class="btn-bookmark" data-bookmark-id="res-6" aria-label="Bookmark">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-meta">
+                    <p class="uploaded-by">Uploaded by: <strong>Sameer Khan</strong></p>
+                </div>
+                <div class="card-bottom">
+                    <span class="upload-date">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Apr 05, 2025
+                    </span>
+                    <button class="btn-download" data-action="view">View</button>
+                </div>
+            </div>
+
+            <!-- Empty State Message -->
+            <div class="empty-resources" id="emptyState">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <h4>No resources found</h4>
+                <p>Try searching with different keywords or switch category filters.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resource Preview & Details Modal -->
+    <div class="modal-overlay" id="resourceModalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+            <div class="modal-body">
+                <div class="modal-header-top">
+                    <div class="modal-cat-icon icon-box" id="modalIconBox">
+                        <!-- Icon SVG -->
+                    </div>
+                    <div class="modal-header-text">
+                        <h2 id="modalTitle">Resource Title</h2>
+                        <span class="badge" id="modalBadge">Category</span>
+                    </div>
+                </div>
+
+                <div class="modal-stats-grid">
+                    <div class="modal-stat-box">
+                        <label>Format</label>
+                        <span id="modalFormat">PDF / Doc</span>
+                    </div>
+                    <div class="modal-stat-box">
+                        <label>Uploaded By</label>
+                        <span id="modalAuthor">Author</span>
+                    </div>
+                    <div class="modal-stat-box">
+                        <label>Date</label>
+                        <span id="modalDate">Apr 18, 2025</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 style="font-family: var(--font-heading); margin-bottom: 6px; font-size: 0.92rem;">Preview Snippet:</h4>
+                    <div class="preview-viewer-box">
+                        <pre id="modalPreviewSnippet" style="margin: 0; font-family: inherit; white-space: pre-wrap;">
+// Study Resource preview excerpt
+// Verified CampusConnect content
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-download-modal" id="modalDownloadAction">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>Download Now</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div class="toast-notification" id="toastNotification">
+        <span id="toastMessage">Action completed</span>
+    </div>
+
+    <!-- Interactive JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Data snippets for detail modal
+            const resourceSnippets = {
+                "res-1": "--- DATA STRUCTURES & ALGORITHMS NOTES ---\n* Topics: Arrays, Linked Lists, Stacks, Queues, Binary Trees, Graphs & Dynamic Programming\n* Time Complexity Cheatsheet & Memory Layouts Included\n* Solved Semester Questions with Diagrams",
+                "res-2": "--- PYTHON BASICS TUTORIAL ---\n# Module 1: Python syntax, list comprehensions, dicts\n# Module 2: Object Oriented Programming (OOP) & Inheritance\n# Module 3: File I/O, Error Handling, & Mini Project",
+                "res-3": "--- COMPANY-WISE PREVIOUS PAPERS ---\n* Includes TCS NQT, Infosys InfyTQ, Wipro, and Amazon assessment papers\n* Quantitative Aptitude, Logical Reasoning, and Coding section solutions (2020-2024)",
+                "res-4": "--- WEB DEVELOPMENT COMPREHENSIVE NOTES ---\n* Semantic HTML5 & Responsive CSS Grid / Flexbox\n* JavaScript ES6+ async/await & DOM Event Architecture\n* RESTful API integration & Express backend basics",
+                "res-5": "--- MACHINE LEARNING REFERENCE BOOK ---\n* Supervised vs Unsupervised Learning\n* Linear/Logistic Regression, Decision Trees, Random Forests, SVMs\n* Neural Networks Introduction & Scikit-Learn pipelines",
+                "res-6": "--- 150 DSA PRACTICE QUESTIONS ---\n// Curated interview questions covering:\n// Two Pointers, Sliding Window, Binary Search, Graph BFS/DFS, DP Tabulation\n// Clean C++ / Java / Python optimal solutions"
+            };
+
+            const cards = document.querySelectorAll(".resource-card");
+            const filterButtons = document.querySelectorAll("#filterTabs .tab-btn");
+            const searchInput = document.getElementById("search");
+            const emptyState = document.getElementById("emptyState");
+
+            let activeCategory = "all";
+            let searchQuery = "";
+
+            // 1. Filter and Search Handler
+            function updateVisibility() {
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const category = card.getAttribute("data-category");
+                    const title = (card.getAttribute("data-title") || "").toLowerCase();
+                    const author = (card.getAttribute("data-author") || "").toLowerCase();
+
+                    const matchesCategory = activeCategory === "all" || category === activeCategory;
+                    const matchesSearch = searchQuery === "" || title.includes(searchQuery) || author.includes(searchQuery);
+
+                    if (matchesCategory && matchesSearch) {
+                        card.style.display = "flex";
+                        visibleCount++;
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+
+                emptyState.style.display = visibleCount === 0 ? "block" : "none";
+            }
+
+            // Category Tab Clicks
+            filterButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    filterButtons.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    activeCategory = btn.getAttribute("data-category");
+                    updateVisibility();
+                });
+            });
+
+            // Search input
+            searchInput.addEventListener("input", (e) => {
+                searchQuery = e.target.value.toLowerCase().trim();
+                updateVisibility();
+            });
+
+            // 2. Bookmark Persistence & Toggle
+            const BOOKMARK_STORAGE_KEY = "campusconnect_saved_bookmarks";
+            function getSavedBookmarks() {
+                try {
+                    return JSON.parse(localStorage.getItem(BOOKMARK_STORAGE_KEY)) || [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function syncBookmarkUI() {
+                const saved = getSavedBookmarks();
+                cards.forEach(card => {
+                    const id = card.getAttribute("data-id");
+                    const btn = card.querySelector(".btn-bookmark");
+                    if (btn) {
+                        if (saved.includes(id)) {
+                            btn.classList.add("bookmarked");
+                        } else {
+                            btn.classList.remove("bookmarked");
+                        }
+                    }
+                });
+            }
+
+            document.querySelectorAll(".btn-bookmark").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const id = btn.getAttribute("data-bookmark-id");
+                    let saved = getSavedBookmarks();
+
+                    if (saved.includes(id)) {
+                        saved = saved.filter(item => item !== id);
+                        btn.classList.remove("bookmarked");
+                        showToast("Resource removed from bookmarks.");
+                    } else {
+                        saved.push(id);
+                        btn.classList.add("bookmarked");
+                        showToast("Resource saved to bookmarks!", "success");
+                    }
+
+                    localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(saved));
+                });
+            });
+
+            // 3. Modal Details & Preview
+            const modalOverlay = document.getElementById("resourceModalOverlay");
+            const modalCloseBtn = document.getElementById("modalCloseBtn");
+            const modalTitle = document.getElementById("modalTitle");
+            const modalBadge = document.getElementById("modalBadge");
+            const modalAuthor = document.getElementById("modalAuthor");
+            const modalDate = document.getElementById("modalDate");
+            const modalFormat = document.getElementById("modalFormat");
+            const modalPreviewSnippet = document.getElementById("modalPreviewSnippet");
+            const modalIconBox = document.getElementById("modalIconBox");
+            const modalDownloadAction = document.getElementById("modalDownloadAction");
+
+            let currentActiveCard = null;
+
+            function openModal(card) {
+                currentActiveCard = card;
+                const id = card.getAttribute("data-id");
+                const title = card.getAttribute("data-title");
+                const author = card.getAttribute("data-author");
+                const date = card.getAttribute("data-date");
+                const badgeText = card.getAttribute("data-badge");
+                const badgeClass = card.getAttribute("data-badge-class");
+                const iconBox = card.querySelector(".icon-box");
+
+                modalTitle.textContent = title;
+                modalBadge.textContent = badgeText;
+                modalBadge.className = `badge badge-${badgeClass}`;
+                modalAuthor.textContent = author;
+                modalDate.textContent = date;
+                modalFormat.textContent = badgeClass === "tutorials" ? "Video / Lessons" : "PDF Document";
+
+                if (iconBox) {
+                    modalIconBox.className = `modal-cat-icon icon-box icon-${badgeClass}`;
+                    modalIconBox.innerHTML = iconBox.innerHTML;
+                }
+
+                modalPreviewSnippet.textContent = resourceSnippets[id] || `// Preview for ${title}\n// Verified study materials from ${author}`;
+
+                modalOverlay.classList.add("active");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove("active");
+                document.body.style.overflow = "";
+                currentActiveCard = null;
+            }
+
+            modalCloseBtn.addEventListener("click", closeModal);
+            modalOverlay.addEventListener("click", (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape" && modalOverlay.classList.contains("active")) {
+                    closeModal();
+                }
+            });
+
+            // Download Action
+            function triggerDownload(title) {
+                showToast(`Downloading "${title}"...`, "success");
+            }
+
+            modalDownloadAction.addEventListener("click", () => {
+                if (currentActiveCard) {
+                    const title = currentActiveCard.getAttribute("data-title");
+                    triggerDownload(title);
+                    closeModal();
+                }
+            });
+
+            // Card click & Button clicks
+            cards.forEach(card => {
+                const downloadBtn = card.querySelector(".btn-download");
+                if (downloadBtn) {
+                    downloadBtn.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        openModal(card);
+                    });
+                }
+
+                card.addEventListener("click", () => {
+                    openModal(card);
+                });
+            });
+
+            // 4. Toast Utility
+            const toast = document.getElementById("toastNotification");
+            const toastMessage = document.getElementById("toastMessage");
+            let toastTimer = null;
+
+            function showToast(msg, type = "info") {
+                toastMessage.textContent = msg;
+                toast.className = `toast-notification show ${type === 'success' ? 'success' : ''}`;
+
+                if (toastTimer) clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove("show");
+                }, 2800);
+            }
+
+            // Initialize bookmarks on load
+            syncBookmarkUI();
+        });
+    </script>
+    <script src="../session.js"></script>
+</body>
+
+</html>

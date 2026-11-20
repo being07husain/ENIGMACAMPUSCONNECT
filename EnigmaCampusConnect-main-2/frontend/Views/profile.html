@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect | My Profile</title>
+    <link href="../Styles/profile.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div><img src="../images/LOGO.png" class="logo" alt="logo"></div>
+        <div class="navbar">
+            <a href="../Views/dashboard.html">Dashboard</a>
+            <a href="../Views/events.html">Events</a>
+            <a href="../Views/clubs.html">Clubs & Societies</a>
+            <a href="../Views/notices.html">Notices</a>
+            <a href="../Views/opportunities.html">Opportunities</a>
+            <a href="../Views/resources.html">Resources</a>
+            <a href="../Views/profile.html">Profile</a>
+            <a href="../Views/login.html">Logout</a>
+        </div>
+    </div>
+
+    <div class="profile-section">
+        <!-- Top Bar: Search & Profile Dropdown -->
+        <div class="top-bar">
+            <input type="search" placeholder="Search profile..." id="search" name="search">
+            <div class="user-badge" id="userBadge">
+                <img src="../images/profile.png" alt="profile">
+                <span id="topBarName">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Section Title -->
+        <h3 class="page-title">My Profile</h3>
+
+        <!-- Profile Top Grid: 2 Cards -->
+        <div class="profile-cards-grid">
+            <!-- Left Card: Profile Summary -->
+            <div class="card profile-summary-card">
+                <div class="profile-header">
+                    <div class="avatar-wrapper">
+                        <img src="../images/profile.png" alt="Profile" class="profile-avatar" id="avatarImg">
+                    </div>
+                    <div class="profile-info">
+                        <h4 class="profile-name" id="profileName">Loading...</h4>
+                        <p class="profile-meta" id="profileMeta">Student</p>
+                        <p class="profile-college" id="profileCollege">CampusConnect Member</p>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span class="stat-value" id="statEvents">0</span>
+                        <span class="stat-label">Events Registered</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statBookmarks">5</span>
+                        <span class="stat-label">Bookmarks</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statClubs">4</span>
+                        <span class="stat-label">Joined Clubs</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card: Personal Information -->
+            <div class="card personal-info-card">
+                <div class="card-header">
+                    <h4 class="card-title">Personal Information</h4>
+                    <button class="btn-edit-profile" id="openEditModalBtn">Edit Profile</button>
+                </div>
+
+                <div class="info-fields">
+                    <div class="info-group">
+                        <label>Full Name</label>
+                        <p class="info-value" id="infoFullName">-</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Email</label>
+                        <p class="info-value email" id="infoEmail">-</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Account Role</label>
+                        <p class="info-value" id="infoRole" style="text-transform: capitalize;">-</p>
+                    </div>
+                    <div class="info-group" id="courseGroup">
+                        <label id="courseLabel">Course</label>
+                        <p class="info-value" id="infoCourse">-</p>
+                    </div>
+                    <div class="info-group" id="rankGroup">
+                        <label id="rankLabel">Rank</label>
+                        <p class="info-value" id="infoRank">-</p>
+                    </div>
+                    <div class="info-group" id="dateGroup">
+                        <label id="dateLabel">Date of Birth</label>
+                        <p class="info-value" id="infoDate">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: My Achievements -->
+        <div class="achievements-section">
+            <h4 class="section-title">My Achievements</h4>
+            <div class="achievements-grid">
+                <!-- Achievement 1 -->
+                <div class="achievement-card">
+                    <div class="achievement-icon icon-medal"></div>
+                    <div class="achievement-text">
+                        <h5>Event Participant</h5>
+                        <p id="achievementEventsText">Registered for 0 events</p>
+                    </div>
+                </div>
+
+                <!-- Achievement 2 -->
+                <div class="achievement-card">
+                    <div class="achievement-icon icon-club"></div>
+                    <div class="achievement-text">
+                        <h5>Club Member</h5>
+                        <p>Joined 4 clubs</p>
+                    </div>
+                </div>
+
+                <!-- Achievement 3 -->
+                <div class="achievement-card">
+                    <div class="achievement-icon icon-resource"></div>
+                    <div class="achievement-text">
+                        <h5>Resource Explorer</h5>
+                        <p>Saved 5 resources</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; justify-content:center; align-items:center;">
+        <div style="background:#fff; border-radius:16px; padding:28px 32px; width:90%; max-width:480px; box-shadow:0 12px 32px rgba(0,0,0,0.2);">
+            <h3 style="margin-top:0; font-family:'Plus Jakarta Sans', sans-serif; margin-bottom:20px; color:#0f172a;">Edit Profile</h3>
+            <form id="editProfileForm" style="display:flex; flex-direction:column; gap:14px;">
+                <div>
+                    <label style="font-size:0.8rem; font-weight:600; color:#64748b; display:block; margin-bottom:4px;">Full Name</label>
+                    <input type="text" id="editFullName" required style="width:100%; padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:0.92rem; box-sizing:border-box;">
+                </div>
+                <div id="editCourseWrapper">
+                    <label id="editCourseLabel" style="font-size:0.8rem; font-weight:600; color:#64748b; display:block; margin-bottom:4px;">Course</label>
+                    <input type="text" id="editCourse" style="width:100%; padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:0.92rem; box-sizing:border-box;">
+                </div>
+                <div id="editRankWrapper">
+                    <label id="editRankLabel" style="font-size:0.8rem; font-weight:600; color:#64748b; display:block; margin-bottom:4px;">Rank</label>
+                    <input type="text" id="editRank" style="width:100%; padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:0.92rem; box-sizing:border-box;">
+                </div>
+                <div id="editDobWrapper">
+                    <label id="editDobLabel" style="font-size:0.8rem; font-weight:600; color:#64748b; display:block; margin-bottom:4px;">Date of Birth</label>
+                    <input type="date" id="editDob" style="width:100%; padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:0.92rem; box-sizing:border-box;">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+                    <button type="button" id="closeModalBtn" style="padding:8px 18px; background:#f1f5f9; border:none; border-radius:8px; font-weight:600; cursor:pointer; color:#475569;">Cancel</button>
+                    <button type="submit" id="saveProfileBtn" style="padding:8px 20px; background:#1a73e8; border:none; border-radius:8px; font-weight:600; cursor:pointer; color:#fff;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = (window.location.protocol === 'file:' || (window.location.port !== '8000' && window.location.port !== ''))
+            ? 'http://127.0.0.1:8000'
+            : '';
+
+        let currentUser = null;
+
+        function handleLogout() {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("user");
+            window.location.href = "login.html";
+        }
+
+        // Attach logout event to sidebar link
+        document.querySelectorAll(".sidebar .navbar a").forEach(a => {
+            if (a.textContent.trim().toLowerCase() === "logout") {
+                a.href = "javascript:void(0)";
+                a.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    handleLogout();
+                });
+            }
+        });
+
+        function populateUI(user) {
+            if (!user) return;
+            currentUser = user;
+
+            const name = user.fullname || "Student";
+            const role = user.role || "student";
+            const email = user.email || "";
+            const course = user.course || user.department || "Not specified";
+            const rank = user.rank || "";
+            const dob = user.dob || user.dateofjoin || "";
+            const eventsCount = user.events_registered || 0;
+
+            // Top bar
+            document.getElementById("topBarName").textContent = name;
+
+            // Profile card
+            document.getElementById("profileName").textContent = name;
+            document.getElementById("profileMeta").textContent = role === "student"
+                ? `${course}${rank ? ' • Rank ' + rank : ''}`
+                : `${course} • ${role.charAt(0).toUpperCase() + role.slice(1)}`;
+            document.getElementById("profileCollege").textContent = user.department ? `${user.department} Department` : "CampusConnect Member";
+
+            // Stats
+            document.getElementById("statEvents").textContent = eventsCount;
+            document.getElementById("achievementEventsText").textContent = `Registered for ${eventsCount} event${eventsCount === 1 ? '' : 's'}`;
+
+            // Personal Information
+            document.getElementById("infoFullName").textContent = name;
+            document.getElementById("infoEmail").textContent = email;
+            document.getElementById("infoRole").textContent = role.charAt(0).toUpperCase() + role.slice(1);
+
+            if (role === "faculty") {
+                document.getElementById("courseLabel").textContent = "Department";
+                document.getElementById("infoCourse").textContent = user.department || "Not specified";
+                document.getElementById("rankGroup").style.display = "none";
+                document.getElementById("dateLabel").textContent = "Joining Date";
+                document.getElementById("infoDate").textContent = user.dateofjoin || "Not specified";
+            } else {
+                document.getElementById("courseLabel").textContent = "Course";
+                document.getElementById("infoCourse").textContent = user.course || "Not specified";
+                document.getElementById("rankGroup").style.display = rank ? "flex" : "none";
+                document.getElementById("infoRank").textContent = rank || "N/A";
+                document.getElementById("dateLabel").textContent = "Date of Birth";
+                document.getElementById("infoDate").textContent = user.dob || "Not specified";
+            }
+        }
+
+        async function loadUserProfile() {
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                // Not logged in -> redirect to login
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Immediately populate from cached user for zero flicker
+            const cachedUser = JSON.parse(localStorage.getItem("user") || "null");
+            if (cachedUser) {
+                populateUI(cachedUser);
+            }
+
+            // Fetch live data from backend /api/auth/me
+            try {
+                const response = await fetch(API_BASE + "/api/auth/me", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    handleLogout();
+                    return;
+                }
+
+                if (response.ok) {
+                    const freshUser = await response.json();
+                    localStorage.setItem("user", JSON.stringify(freshUser));
+                    populateUI(freshUser);
+                }
+            } catch (err) {
+                console.warn("Could not fetch live profile from backend:", err);
+            }
+        }
+
+        // Modal controls
+        const editModal = document.getElementById("editModal");
+        const openModalBtn = document.getElementById("openEditModalBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const editForm = document.getElementById("editProfileForm");
+
+        openModalBtn.addEventListener("click", () => {
+            if (!currentUser) return;
+            document.getElementById("editFullName").value = currentUser.fullname || "";
+            if (currentUser.role === "faculty") {
+                document.getElementById("editCourseLabel").textContent = "Department";
+                document.getElementById("editCourse").value = currentUser.department || "";
+                document.getElementById("editRankWrapper").style.display = "none";
+                document.getElementById("editDobLabel").textContent = "Joining Date";
+                document.getElementById("editDob").value = currentUser.dateofjoin || "";
+            } else {
+                document.getElementById("editCourseLabel").textContent = "Course";
+                document.getElementById("editCourse").value = currentUser.course || "";
+                document.getElementById("editRankWrapper").style.display = "block";
+                document.getElementById("editRank").value = currentUser.rank || "";
+                document.getElementById("editDobLabel").textContent = "Date of Birth";
+                document.getElementById("editDob").value = currentUser.dob || "";
+            }
+            editModal.style.display = "flex";
+        });
+
+        closeModalBtn.addEventListener("click", () => {
+            editModal.style.display = "none";
+        });
+
+        editModal.addEventListener("click", (e) => {
+            if (e.target === editModal) editModal.style.display = "none";
+        });
+
+        editForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem("access_token");
+            if (!token) return;
+
+            const saveBtn = document.getElementById("saveProfileBtn");
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Saving...";
+
+            const payload = {
+                fullname: document.getElementById("editFullName").value.trim()
+            };
+
+            if (currentUser.role === "faculty") {
+                payload.department = document.getElementById("editCourse").value.trim() || null;
+            } else {
+                payload.course = document.getElementById("editCourse").value.trim() || null;
+                payload.rank = document.getElementById("editRank").value.trim() || null;
+                payload.dob = document.getElementById("editDob").value || null;
+            }
+
+            try {
+                const response = await fetch(API_BASE + "/api/auth/profile", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.detail || "Could not update profile");
+                }
+
+                // Update local storage and UI
+                const updated = { ...currentUser, ...data.user };
+                localStorage.setItem("user", JSON.stringify(updated));
+                populateUI(updated);
+                editModal.style.display = "none";
+                alert("Profile updated successfully!");
+            } catch (err) {
+                alert("Error updating profile: " + err.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save Changes";
+            }
+        });
+
+        // Initialize on page load
+        loadUserProfile();
+    </script>
+</body>
+
+</html>

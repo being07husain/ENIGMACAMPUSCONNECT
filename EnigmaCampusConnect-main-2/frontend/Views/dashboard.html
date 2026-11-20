@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect | Dashboard</title>
+    <link href="../Styles/dashboard.css?v=3" rel="stylesheet">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div><img src="../images/LOGO.png" class="logo" alt="logo"></div>
+        <div class="navbar">
+            <a href="../Views/dashboard.html">Dashboard</a>
+            <a href="../Views/events.html">Events</a>
+            <a href="../Views/clubs.html">Clubs & Societies</a>
+            <a href="../Views/notices.html">Notices</a>
+            <a href="../Views/opportunities.html">Opportunities</a>
+            <a href="../Views/resources.html">Resources</a>
+            <a href="../Views/profile.html">Profile</a>
+            <a href="javascript:void(0)" id="logoutBtn" onclick="handleLogout()">Logout</a>
+        </div>
+    </div>
+    <div class="dashboard-section">
+        <div class="dashboard-topbar">
+            <input type="search" placeholder="Search Email,Clubs,Resources etc" id="search" name="search">
+            <div class="user-badge" onclick="window.location.href='profile.html'">
+                <img src="../images/profile.png" alt="profile"><span id="dashboardUserName">Loading...</span>
+            </div>
+        </div>
+
+        <div class="dashboard-welcome">
+            <h3 id="welcomeHeading">Welcome Back</h3>
+            <p>Here's whats happening in the campus</p>
+        </div>
+
+        <div class="current-status">
+            <div class="card" onclick="window.location.href='events.html'">
+                <img src="../images/events.png" alt="events">
+                <h3>Events</h3>
+                <p id="statEvents">0 Events Registered</p>
+            </div>
+            <div class="card" onclick="window.location.href='clubs.html'">
+                <img src="../images/clubs.png" alt="clubs">
+                <h3>Clubs & Societies</h3>
+                <p id="statClubs">0 Clubs Applied</p>
+            </div>
+            <div class="card" onclick="window.location.href='opportunities.html'">
+                <img src="../images/opportunities.png" alt="opportunities">
+                <h3>Opportunities</h3>
+                <p id="statOpps">0 Opportunities Applied</p>
+            </div>
+            <div class="card" onclick="window.location.href='notices.html'">
+                <img src="../images/notices.png" alt="notices">
+                <h3>Notices</h3>
+                <p id="statNotices">0 Active Notices</p>
+            </div>
+            <div class="card" onclick="window.location.href='resources.html'">
+                <img src="../images/resources.png" alt="resources">
+                <h3>Resources</h3>
+                <p id="statResources">0 Resources Available</p>
+            </div>
+        </div>
+
+        <div class="dashboard-content-grid">
+            <div class="dashboard-main-col">
+                <div class="upcoming-events-container">
+                    <div class="section-title-bar">
+                        <h5>UPCOMING EVENTS</h5>
+                        <a href="events.html" class="view-all-link">View All Events &rarr;</a>
+                    </div>
+                    <div class="upcoming-events" id="dashboardEventsList">
+                        <div style="grid-column: 1 / -1; padding: 20px; color: #64748b; font-size: 0.9rem;">
+                            Loading upcoming events from database...
+                        </div>
+                    </div>
+                </div>
+                <div class="recommended-clubs" id="dashboardClubsList">
+                    <!-- Clubs populated dynamically with student application status -->
+                </div>
+            </div>
+            <div class="dashboard-sidebar-col">
+                <div class="important-notices" id="dashboardNoticesList">
+                    <!-- Notices populated dynamically from database -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="dashboardToast" style="display:none; position:fixed; bottom:24px; right:24px; background:#0f172a; color:#fff; padding:12px 20px; border-radius:10px; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.9rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.25); z-index:9999; transition:all 0.3s;">
+        Notification
+    </div>
+
+    <script>
+        const API_BASE = (window.location.protocol === 'file:' || (window.location.port !== '8000' && window.location.port !== ''))
+            ? 'http://127.0.0.1:8000'
+            : '';
+        window.API_BASE = API_BASE;
+
+        const token = localStorage.getItem("access_token");
+        const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+
+        function showDashboardToast(msg) {
+            const toast = document.getElementById("dashboardToast");
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.style.display = "block";
+            setTimeout(() => { toast.style.display = "none"; }, 3000);
+        }
+
+        function handleLogout() {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("user");
+            window.location.href = "login.html";
+        }
+
+        function formatDateDisplay(dateStr) {
+            if (!dateStr) return "TBA";
+            const parts = dateStr.split("-");
+            if (parts.length === 3) {
+                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const y = parts[0], m = parseInt(parts[1], 10) - 1, d = parseInt(parts[2], 10);
+                if (!isNaN(m) && !isNaN(d) && m >= 0 && m < 12) {
+                    return `${months[m]} ${d}, ${y}`;
+                }
+            }
+            return dateStr;
+        }
+
+        async function initDashboard() {
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const cached = JSON.parse(localStorage.getItem("user") || "null");
+            if (cached) {
+                renderHeaderUser(cached);
+            }
+
+            await loadDashboardData();
+        }
+
+        function renderHeaderUser(user) {
+            const name = user.fullname || "User";
+            const role = user.role || "student";
+            const firstName = name.split(" ")[0];
+            document.getElementById("dashboardUserName").textContent = name.toUpperCase();
+            if (role === "faculty") {
+                document.getElementById("welcomeHeading").textContent = `Welcome Back Prof. ${firstName}`;
+            } else {
+                document.getElementById("welcomeHeading").textContent = `Welcome Back ${firstName}`;
+            }
+        }
+
+        async function loadDashboardData() {
+            try {
+                const res = await fetch(`${API_BASE}/api/dashboard/summary`, { headers });
+                if (res.status === 401) {
+                    handleLogout();
+                    return;
+                }
+                if (!res.ok) throw new Error("Could not load dashboard summary");
+                const data = await res.json();
+
+                const user = data.user || JSON.parse(localStorage.getItem("user") || "{}");
+                const isFaculty = Boolean(user && user.role === "faculty");
+                renderHeaderUser(user);
+
+                // 1. Render Status Cards from MongoDB for this student
+                const stats = data.stats || {};
+                const statEvents = document.getElementById("statEvents");
+                const statClubs = document.getElementById("statClubs");
+                const statOpps = document.getElementById("statOpps");
+                const statNotices = document.getElementById("statNotices");
+                const statResources = document.getElementById("statResources");
+
+                if (isFaculty) {
+                    if (statEvents) statEvents.textContent = `${stats.events_registered || 0} Events Coordinated`;
+                    if (statClubs) statClubs.textContent = `Faculty Mentor View`;
+                    if (statOpps) statOpps.textContent = `Student Opportunities`;
+                } else {
+                    if (statEvents) statEvents.textContent = `${stats.events_registered || 0} Registered`;
+                    if (statClubs) statClubs.textContent = `${stats.clubs_applied || 0} Applied / Joined`;
+                    if (statOpps) statOpps.textContent = `${stats.opportunities_registered || 0} Applied`;
+                }
+
+                if (statNotices) statNotices.textContent = `${stats.notices_count || 0} Active Notices`;
+                if (statResources) statResources.textContent = `${stats.resources_count || 0} Resources Available`;
+
+                // 2. Render Upcoming Events
+                const eventsListContainer = document.getElementById("dashboardEventsList");
+                if (eventsListContainer) {
+                    const upcoming = data.upcoming_events || [];
+                    if (upcoming.length === 0) {
+                        eventsListContainer.innerHTML = `
+                            <div style="grid-column: 1 / -1; padding: 24px; color: #64748b; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 12px; text-align: center;">
+                                No upcoming events found.
+                            </div>
+                        `;
+                    } else {
+                        let eventsHtml = "";
+                        upcoming.forEach(ev => {
+                            let actionBtn = "";
+                            if (isFaculty) {
+                                actionBtn = `<button onclick="window.location.href='events.html'" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1;">👔 Details</button>`;
+                            } else if (ev.is_registered) {
+                                actionBtn = `
+                                    <button class="registered" style="background:#ecfdf5; color:#059669; border:1.5px solid #a7f3d0; font-weight:700;" onclick="toggleEventReg('${ev.id}')">
+                                        ✓ Registered
+                                    </button>
+                                `;
+                            } else {
+                                actionBtn = `<button onclick="toggleEventReg('${ev.id}')">Register</button>`;
+                            }
+
+                            eventsHtml += `
+                                <div class="event" id="dash-event-${ev.id}">
+                                    <h4>${ev.title}</h4>
+                                    <p>Date: ${formatDateDisplay(ev.date)}</p>
+                                    <p>Time: ${ev.time || '10:00 AM'}</p>
+                                    <p>Venue: ${ev.venue || 'Main Auditorium'}</p>
+                                    <p>Club: ${ev.organizer || 'Campus Club'}</p>
+                                    ${actionBtn}
+                                </div>
+                            `;
+                        });
+                        eventsListContainer.innerHTML = eventsHtml;
+                    }
+                }
+
+                // 3. Render Recommended Clubs with student application status
+                const clubsListContainer = document.getElementById("dashboardClubsList");
+                if (clubsListContainer) {
+                    const clubs = data.recommended_clubs || [];
+                    clubsListContainer.innerHTML = clubs.map(c => {
+                        const appliedBadge = c.is_applied
+                            ? `<span style="font-size:0.75rem; color:#059669; font-weight:700; margin-top:8px; display:block;">✓ Applied</span>`
+                            : ``;
+                        const cardBorder = c.is_applied ? `style="border-color:#a7f3d0; background:#f0fdf4;"` : ``;
+                        return `
+                            <div class="club" onclick="window.location.href='clubs.html'" ${cardBorder}>
+                                ${c.name}
+                                ${appliedBadge}
+                            </div>
+                        `;
+                    }).join("");
+                }
+
+                // 4. Render Important / Latest Notices from MongoDB
+                const noticesListContainer = document.getElementById("dashboardNoticesList");
+                if (noticesListContainer) {
+                    const notices = data.notices || [];
+                    if (notices.length === 0) {
+                        noticesListContainer.innerHTML = `<li><span>No recent notices available.</span></li>`;
+                    } else {
+                        noticesListContainer.innerHTML = notices.map(n => `
+                            <li onclick="window.location.href='notices.html'">
+                                <span>${n.title}</span>
+                            </li>
+                        `).join("");
+                    }
+                }
+
+            } catch (err) {
+                console.error("Dashboard sync error:", err);
+            }
+        }
+
+        // Live Event Registration directly from Dashboard
+        window.toggleEventReg = async function(eventId) {
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/events/register`, {
+                    method: "POST",
+                    headers: { ...headers, "Content-Type": "application/json" },
+                    body: JSON.stringify({ event_id: eventId })
+                });
+                const resData = await res.json();
+                if (!res.ok) throw new Error(resData.detail || "Registration failed");
+
+                showDashboardToast(resData.message || "Event registration updated!");
+                await loadDashboardData();
+            } catch (err) {
+                showDashboardToast(err.message);
+            }
+        };
+
+        // Live Search Input: filter upcoming events and notices
+        const searchInput = document.getElementById("search");
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                const q = e.target.value.toLowerCase().trim();
+                document.querySelectorAll(".event").forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = (!q || text.includes(q)) ? "flex" : "none";
+                });
+                document.querySelectorAll(".important-notices li").forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = (!q || text.includes(q)) ? "flex" : "none";
+                });
+                document.querySelectorAll(".club").forEach(club => {
+                    const text = club.textContent.toLowerCase();
+                    club.style.display = (!q || text.includes(q)) ? "flex" : "none";
+                });
+            });
+        }
+
+        initDashboard();
+    </script>
+    <script src="../session.js"></script>
+</body>
+
+</html>

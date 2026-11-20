@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect | Register</title>
+    <link rel="stylesheet" href="../Styles/register.css">
+</head>
+
+<body>
+    <div class="leftSideImage">
+        <img src="../images/SIDEIMAGE.jfif" alt="Campus">
+    </div>
+    <div class="register-container">
+        <h2>Create Account</h2>
+        <p>
+            Register to join the CampusConnect community
+            and be a part of your campus
+        </p>
+        <form id="registerForm">
+            <!-- Profession -->
+            <select name="profession" id="profession" required>
+                <option value="">Choose Your Profession</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+            </select>
+            <!-- Common Fields -->
+            <div id="commonFields" class="hidden">
+                <input type="text" name="fullname" id="fullname" placeholder="Full Name">
+            </div>
+            <!-- Student Fields -->
+            <div id="studentFields" class="hidden">
+                <input type="text" name="course" id="course" placeholder="Course (e.g. BCA)">
+                <input type="date" name="dob" id="dob">
+                <input type="text" name="rank" id="rank" placeholder="Rank">
+                <input type="email" name="email" id="email" placeholder="email">
+                <input type="password" name="password" id="studentPassword" placeholder="Password">
+            </div>
+            <!-- Faculty Fields -->
+            <div id="facultyFields" class="hidden">
+                <input type="text" name="department" id="department" placeholder="Department">
+                <input type="date" name="dateofjoin" id="dateofjoin">
+                <input type="email" name="collegeEmail" id="collegeEmail" placeholder="College Email ID">
+                <input type="password" name="password" id="facultyPassword" placeholder="Password">
+            </div>
+            <button type="submit" id="registerBtn" class="hidden">
+                Create Account
+            </button>
+        </form>
+        <p>
+            Already have an account?
+            <button class="login" onclick="loginpage()">Login</button>
+        </p>
+    </div>
+    <script>
+        const API_BASE = (window.location.protocol === 'file:' || (window.location.port !== '8000' && window.location.port !== ''))
+            ? 'http://127.0.0.1:8000'
+            : '';
+
+        const profession = document.getElementById("profession");
+        const commonFields = document.getElementById("commonFields");
+        const studentFields = document.getElementById("studentFields");
+        const facultyFields = document.getElementById("facultyFields");
+        const registerBtn = document.getElementById("registerBtn");
+
+        profession.addEventListener("change", function () {
+            // Hide everything first
+            commonFields.classList.add("hidden");
+            studentFields.classList.add("hidden");
+            facultyFields.classList.add("hidden");
+            registerBtn.classList.add("hidden");
+
+            // Student selected
+            if (this.value === "student") {
+                commonFields.classList.remove("hidden");
+                studentFields.classList.remove("hidden");
+                registerBtn.classList.remove("hidden");
+            }
+            // Faculty selected
+            else if (this.value === "faculty") {
+                commonFields.classList.remove("hidden");
+                facultyFields.classList.remove("hidden");
+                registerBtn.classList.remove("hidden");
+            }
+        });
+
+        function loginpage() {
+            window.location.href = "login.html";
+        }
+
+        function formatErrorMessage(detail) {
+            if (!detail) return "Registration failed. Please try again.";
+            if (typeof detail === "string") return detail;
+            if (Array.isArray(detail)) {
+                return detail.map(item => {
+                    const field = item.loc ? item.loc[item.loc.length - 1] : "Field";
+                    return `${field}: ${item.msg}`;
+                }).join("\n");
+            }
+            if (typeof detail === "object") {
+                return detail.message || JSON.stringify(detail);
+            }
+            return String(detail);
+        }
+
+        document.getElementById("registerForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const role = profession.value;
+            if (!role) {
+                alert("Please choose your profession (Student or Faculty).");
+                return;
+            }
+
+            const fullname = document.getElementById("fullname").value.trim();
+            if (!fullname || fullname.length < 2) {
+                alert("Full Name must be at least 2 characters.");
+                return;
+            }
+
+            const email = role === "student"
+                ? document.getElementById("email").value.trim()
+                : document.getElementById("collegeEmail").value.trim();
+            if (!email) {
+                alert("Please provide a valid email address.");
+                return;
+            }
+
+            const password = role === "student"
+                ? document.getElementById("studentPassword").value
+                : document.getElementById("facultyPassword").value;
+            if (!password || password.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                return;
+            }
+
+            const payload = {
+                fullname,
+                email,
+                password,
+                role,
+                course: role === "student" ? (document.getElementById("course").value.trim() || null) : null,
+                dob: role === "student" ? (document.getElementById("dob").value || null) : null,
+                rank: role === "student" ? (document.getElementById("rank").value.trim() || null) : null,
+                department: role === "faculty" ? (document.getElementById("department").value.trim() || null) : null,
+                dateofjoin: role === "faculty" ? (document.getElementById("dateofjoin").value || null) : null
+            };
+
+            const submitBtn = document.getElementById("registerBtn");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Creating Account...";
+
+            try {
+                const response = await fetch(API_BASE + "/api/auth/register", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(formatErrorMessage(data.detail));
+                }
+                alert("Account created successfully! Please login.");
+                window.location.href = "login.html";
+            } catch (error) {
+                if (error.message.includes("Failed to fetch")) {
+                    alert("Could not connect to the backend server. Make sure the backend is running at http://127.0.0.1:8000");
+                } else {
+                    alert(error.message);
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Create Account";
+            }
+        });
+    </script>
+</body>
+
+</html>

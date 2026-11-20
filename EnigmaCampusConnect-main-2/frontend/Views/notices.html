@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect | Notifications & Notices</title>
+    <link href="../Styles/notices.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div><img src="../images/LOGO.png" class="logo" alt="logo"></div>
+        <div class="navbar">
+            <a href="../Views/dashboard.html">Dashboard</a>
+            <a href="../Views/events.html">Events</a>
+            <a href="../Views/clubs.html">Clubs & Societies</a>
+            <a href="../Views/notices.html">Notices</a>
+            <a href="../Views/opportunities.html">Opportunities</a>
+            <a href="../Views/resources.html">Resources</a>
+            <a href="../Views/profile.html">Profile</a>
+            <a href="../Views/login.html">Logout</a>
+        </div>
+    </div>
+
+    <div class="notices-section">
+        <!-- Top Bar: Search & User Badge -->
+        <div class="top-bar">
+            <input type="search" placeholder="Search notices..." id="search" name="search">
+            <div class="user-badge" onclick="window.location.href='profile.html'">
+                <img src="../images/profile.png" alt="profile">
+                <span>Profile</span>
+            </div>
+        </div>
+
+        <!-- Section Header Row -->
+        <div class="notices-header">
+            <h3 class="page-title">Notifications</h3>
+            <a href="#" class="mark-read-btn">Mark all as read</a>
+        </div>
+
+        <!-- Notifications Card Container -->
+        <div id="facultyNoticeForm"></div>
+        <div class="notices-card" id="noticesContainer">
+            <!-- Notification Item 1 -->
+            <div class="notice-item unread">
+                <div class="notice-icon icon-blue"></div>
+                <div class="notice-content">
+                    <h5 class="notice-title">You registered for TechTalk 2025</h5>
+                    <p class="notice-time">Apr 19, 2025 &bull; 10:15 AM</p>
+                </div>
+                <span class="status-dot dot-blue"></span>
+            </div>
+
+            <!-- Notification Item 2 -->
+            <div class="notice-item">
+                <div class="notice-icon icon-teal"></div>
+                <div class="notice-content">
+                    <h5 class="notice-title">New event added by Coding Club</h5>
+                    <p class="notice-time">Apr 18, 2025 &bull; 4:30 PM</p>
+                </div>
+                <span class="status-dot dot-red"></span>
+            </div>
+
+            <!-- Notification Item 3 -->
+            <div class="notice-item">
+                <div class="notice-icon icon-red"></div>
+                <div class="notice-content">
+                    <h5 class="notice-title">Placement drive is coming tomorrow</h5>
+                    <p class="notice-time">Apr 17, 2025 &bull; 11:00 AM</p>
+                </div>
+                <span class="status-dot dot-red"></span>
+            </div>
+
+            <!-- Notification Item 4 -->
+            <div class="notice-item">
+                <div class="notice-icon icon-gold"></div>
+                <div class="notice-content">
+                    <h5 class="notice-title">You earned a new badge: Event Participant</h5>
+                    <p class="notice-time">Apr 16, 2025 &bull; 9:45 AM</p>
+                </div>
+                <span class="status-dot dot-red"></span>
+            </div>
+
+            <!-- Notification Item 5 -->
+            <div class="notice-item">
+                <div class="notice-icon icon-purple"></div>
+                <div class="notice-content">
+                    <h5 class="notice-title">Your resource "Python Basics Tutorial" has been bookmarked</h5>
+                    <p class="notice-time">Apr 15, 2025 &bull; 2:00 PM</p>
+                </div>
+                <span class="status-dot dot-red"></span>
+            </div>
+        </div>
+    </div>
+<script>
+(async function connectNotificationsBackend() {
+    const token = localStorage.getItem("access_token");
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const formHost = document.getElementById("facultyNoticeForm");
+    if (user && user.role === "faculty") {
+        formHost.innerHTML = `<div style="margin:20px 0;padding:20px;border:1px solid #ddd;border-radius:16px;background:#fff"><h3>Add Faculty Notification</h3><input id="noticeTitle" placeholder="Notification title" style="width:100%;margin:5px 0;padding:10px"><textarea id="noticeMessage" placeholder="Notification message" style="width:100%;margin:5px 0;padding:10px"></textarea><button id="addNoticeBtn">Add Notification</button><small style="display:block;margin-top:8px">Only authenticated faculty accounts can add notifications.</small></div>`;
+        document.getElementById("addNoticeBtn").onclick = async () => {
+            try {
+                const response = await fetch("/api/notifications", {method:"POST", headers:{...headers,"Content-Type":"application/json"}, body:JSON.stringify({title:document.getElementById("noticeTitle").value.trim(),message:document.getElementById("noticeMessage").value.trim(),type:"faculty"})});
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || "Could not add notification");
+                alert("Notification saved in MongoDB successfully.");
+                await loadNotifications();
+            } catch(e) { alert(e.message); }
+        };
+    }
+    async function loadNotifications() {
+        try {
+            const response = await fetch("/api/notifications");
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || "Could not load notifications");
+            const container = document.getElementById("noticesContainer");
+            container.innerHTML = "";
+            data.forEach((n, i) => {
+                const item = document.createElement("div"); item.className = "notice-item" + (i === 0 ? " unread" : "");
+                const date = n.created_at ? new Date(n.created_at).toLocaleString() : "";
+                item.innerHTML = `<div class="notice-icon icon-blue"></div><div class="notice-content"><h5 class="notice-title">${escapeHtml(n.title)}</h5><p>${escapeHtml(n.message)}</p><p class="notice-time">${escapeHtml(date)} · ${escapeHtml(n.created_by || "CampusConnect")}</p></div><span class="status-dot dot-blue"></span>`;
+                container.appendChild(item);
+            });
+        } catch(e) { console.warn(e); }
+    }
+    function escapeHtml(value) { return String(value ?? "").replace(/[&<>\'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c])); }
+    await loadNotifications();
+})();
+</script>
+<script src="../session.js"></script>
+</body>
+
+</html>

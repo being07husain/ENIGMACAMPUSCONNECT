@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect|Login</title>
+    <link rel="stylesheet" href="../Styles/login.css">
+</head>
+
+<body>
+    <div class="leftSideImage">
+        <img src="../images//SIDEIMAGE.jfif">
+    </div>
+    <h2>Welcome Back</h2>
+    <p>Login to your account to get started</p>
+    <form id="loginForm">
+        <label for="username">Email</label>
+        <input type="email" id="username" name="username" placeholder="Email" required>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+        <p id="loginMessage" style="color:#c0392b;"></p>
+    </form>
+    <p>Don't have an account? <button class="signup" onclick="registerpage()">Sign Up</button></p>
+</body>
+<script>
+    const API = (window.location.protocol === 'file:' || (window.location.port !== '8000' && window.location.port !== ''))
+        ? 'http://127.0.0.1:8000'
+        : '';
+
+    function registerpage() { window.location.href = "register.html"; }
+
+    function formatErrorMessage(detail) {
+        if (!detail) return "Login failed. Please try again.";
+        if (typeof detail === "string") return detail;
+        if (Array.isArray(detail)) {
+            return detail.map(item => {
+                const field = item.loc ? item.loc[item.loc.length - 1] : "Field";
+                return `${field}: ${item.msg}`;
+            }).join("\n");
+        }
+        if (typeof detail === "object") {
+            return detail.message || JSON.stringify(detail);
+        }
+        return String(detail);
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const message = document.getElementById("loginMessage");
+        message.style.color = "#c0392b";
+        message.textContent = "Logging in...";
+        try {
+            const response = await fetch(API + "/api/auth/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    email: document.getElementById("username").value.trim(),
+                    password: document.getElementById("password").value
+                })
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(formatErrorMessage(data.detail));
+            localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            window.location.href = "dashboard.html";
+        } catch (error) {
+            if (error.message.includes("Failed to fetch")) {
+                message.textContent = "Could not connect to the backend server. Make sure it is running at http://127.0.0.1:8000.";
+            } else {
+                message.textContent = error.message;
+            }
+        }
+    });
+</script>
+
+</html>
